@@ -1,7 +1,7 @@
 # MIL Manim
 
-This is a demo animation for Multiple Instance Learning made in Manim (https://github.com/ManimCommunity/manim).  
-It is a simple video (just over one minute) that demonstrates how a MIL pipeline works.  
+This is a demo animation for Multiple Instance Learning made in [Manim](https://github.com/ManimCommunity/manim).  
+It is a simple video (just over one minute) that demonstrates how a MIL pipeline works.
 
 ## Usage
 
@@ -21,3 +21,8 @@ Video compilation (high quality):
 instead I'm just randomly generating tensors).
 
 ## License
+
+MIT License  
+Copyright (c) 2022 Joseph Early
+
+See [LICENSE](LICENSE).
