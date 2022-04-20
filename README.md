@@ -3,6 +3,8 @@
 This is a demo animation for Multiple Instance Learning made in [Manim](https://github.com/ManimCommunity/manim).  
 It is a simple video (just over one minute) that demonstrates how a MIL pipeline works.
 
+https://user-images.githubusercontent.com/7620667/164275663-e80da575-8b51-4d75-83e1-9f617e127ddf.mp4
+
 ## Usage
 
 Video compilation (low quality):
