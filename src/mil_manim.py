@@ -2,7 +2,7 @@ import matplotlib as mpl
 import torch
 from manim import *
 
-from util import ShrinkToPoint, TensorMobject, create_filter, calculate_angle
+from util import ShrinkToPoint, ArrayMobject, create_filter, calculate_angle
 
 
 class MILManim(Scene):
@@ -45,9 +45,9 @@ class MILManim(Scene):
         agg_fv = torch.rand((n_features, 1)) * 2 - 1
         features = []
         for idx in range(n_patches):
-            features.append(TensorMobject(feature_vectors[idx], cmap, -1, 1).create_mobject().set_z_index(1))
-        agg_fv = TensorMobject(agg_fv, cmap, -1, 1).create_mobject().set_z_index(1)
-        pred_obj = TensorMobject(torch.as_tensor([0.1, 0.9]), cmap, 0, 1)
+            features.append(ArrayMobject(feature_vectors[idx], cmap, -1, 1).create_mobject().set_z_index(1))
+        agg_fv = ArrayMobject(agg_fv, cmap, -1, 1).create_mobject().set_z_index(1)
+        pred_obj = ArrayMobject(torch.as_tensor([0.1, 0.9]), cmap, 0, 1)
         pred_fv = pred_obj.create_mobject().set_z_index(1)
 
         # Add patches to scene to look like one image

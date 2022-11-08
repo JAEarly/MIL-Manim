@@ -25,21 +25,21 @@ class ShrinkToPoint(Transform):
         return self.mobject
 
 
-class TensorMobject:
+class ArrayMobject:
     """
-    A way to represent PyTorch Tensors in Manim.
+    A way to represent arrays in Manim.
     # TODO it doesn't actually subclass Mobject, which it should
     """
 
-    def __init__(self, tensor, cmap, vmin, vmax):
-        self.tensor = tensor
+    def __init__(self, array, cmap, vmin, vmax):
+        self.array = array
         self.cmap = cmap
         self.img_values = self._calculate_img_values(vmin, vmax)
 
     def _calculate_img_values(self, vmin, vmax):
-        img_values = np.empty((1, len(self.tensor), 3))
+        img_values = np.empty((1, len(self.array), 3))
         norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-        for idx, v in enumerate(self.tensor):
+        for idx, v in enumerate(self.array):
             img_values[:, idx, :] = self.cmap(norm(v.item()))[:3]
         img_values *= 255
         img_values = img_values.astype(np.uint8)
@@ -53,10 +53,10 @@ class TensorMobject:
 
         # Labels for each square
         labels = []
-        for idx, v in enumerate(self.tensor):
+        for idx, v in enumerate(self.array):
             # TODO sort out -0.0 labels
             label = MathTex("{:.1f}".format(v.item())).set_color(WHITE).scale(0.8)
-            label.move_to(img.get_center()).shift(RIGHT * (idx - (len(self.tensor) - 1)/2))
+            label.move_to(img.get_center()).shift(RIGHT * (idx - (len(self.array) - 1)/2))
             labels.append(label)
 
         # Group together and return
@@ -66,12 +66,12 @@ class TensorMobject:
 
     def create_splits(self):
         splits = []
-        for idx in range(len(self.tensor)):
+        for idx in range(len(self.array)):
             print(self.img_values[:, idx, :])
             img = ImageMobject([self.img_values[:, idx, :]])
             img.set_resampling_algorithm(RESAMPLING_ALGORITHMS["nearest"])
             img.height = 1
-            label = MathTex("{:.1f}".format(self.tensor[idx].item())).set_color(WHITE).scale(0.8)
+            label = MathTex("{:.1f}".format(self.array[idx].item())).set_color(WHITE).scale(0.8)
             label.move_to(img.get_center())
             group = Group()
             group.add(img, label)
