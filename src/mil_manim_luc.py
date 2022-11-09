@@ -5,7 +5,7 @@ from manim import *
 from util import ShrinkToPoint, ArrayMobject, create_filter, calculate_angle
 
 
-class MILManim(Scene):
+class MILManimLUC(Scene):
 
     def construct(self):
         # Setup scene
@@ -134,7 +134,7 @@ class MILManim(Scene):
         # Create and add feature extractor
         fe_filter = create_filter(GREEN).scale(0.4)
         fe_filter.set_z_index(2).move_to(flat_patches[0].get_center() + 1.5 * RIGHT).rotate(PI/2)
-        fe_text = Text("Feature \nExtractor", font_size=20, color=BLACK).shift(UP * 3.6 + 4.5 * LEFT)
+        fe_text = Text("   Feature   \nExtractor", font_size=20, color=BLACK).shift(UP * 3.6 + 4.5 * LEFT)
         self.play(
             Write(fe_text),
             Create(fe_filter),
@@ -184,7 +184,7 @@ class MILManim(Scene):
         # Create and add classifier
         clz_filter = create_filter(RED).scale(0.4)
         clz_filter.set_z_index(2).move_to(features[0].get_center() + 2.3 * RIGHT).rotate(PI/2)
-        clz_text = Text("Instance \nClassifier", font_size=20, color=BLACK).shift(UP * 3.6 + 1.3 * LEFT)
+        clz_text = Text("  Instance  \nClassifier", font_size=20, color=BLACK).shift(UP * 3.6 + 1.3 * LEFT)
 
         self.play(
             Write(clz_text),
@@ -194,7 +194,7 @@ class MILManim(Scene):
 
         # Classify patches
         feature_copies = [f.copy().set_z_index(0) for f in features]
-        instance_preds_text = Text("Instance \nPredictions",
+        instance_preds_text = Text("  Instance  \nPredictions",
                                    font_size=28, color=BLACK).next_to(clz_text, buff=0.6).shift(DOWN * 0.1)
         for idx, feature in enumerate(features):
             feature_copy = feature_copies[idx]
@@ -235,7 +235,7 @@ class MILManim(Scene):
 
         # Merge instance predictions into bag prediction
         instance_pred_obj_copies = [o.copy().set_z_index(0) for o in instance_pred_objs]
-        bag_pred_text = Text("Bag \nPrediction",
+        bag_pred_text = Text("     Bag     \nPrediction",
                              font_size=28, color=BLACK).next_to(instance_preds_text, buff=2.2)#.shift(DOWN * 0.1)
         bag_pred_obj.move_to(instance_pred_objs[0].get_center() + 4 * RIGHT).scale(0.4)
         for idx in range(len(instance_pred_objs)):
@@ -257,12 +257,53 @@ class MILManim(Scene):
                                  "Water: 0% \n"
                                  "Barren: 2%\n"
                                  "Unknown: 0%",
-                                 font_size=25, color=BLACK, slant=ITALIC).move_to(bag_pred_obj.get_center() + 1.5 * DOWN)
+                                 font_size=25, color=BLACK, slant=ITALIC)
+        clz_bag_pred_text.move_to(bag_pred_obj.get_center() + 1.5 * DOWN)
         self.play(Write(clz_bag_pred_text), run_time=3)
+        self.wait(3)
 
         # Create instance prediction grid (with overlay?)
+        grid_size = (3, 3)
+        final_patches = np.empty(grid_size, dtype=object)
+        final_patch_size = 0.7
+        final_patch_colours = [YELLOW, YELLOW, YELLOW, YELLOW, BLUE, YELLOW, YELLOW, BLUE, GREEN]
+        for col in range(grid_size[0]):
+            for row in range(grid_size[1]):
+                patch_path = "img/lcc/dg_lcc_{:d}_{:d}.png".format(row, col)
+                final_patch = ImageMobject(patch_path)
+                final_patch.height = final_patch.width = final_patch_size
+                final_patch.shift((2.5 + col * final_patch_size) * RIGHT
+                                  + (1.5 + row * final_patch_size) * DOWN).set_z_index(0)
+                final_patches[row][col] = final_patch
+        final_flat_patches = final_patches.ravel()
+        patch_pred_text = Text("Patch Prediction Mask", font_size=28, color=BLACK)
+        patch_pred_text.next_to(final_patches[1][1], direction=UP, buff=1).shift(1.1 * RIGHT)
+        self.play(
+            *[FadeIn(p) for p in final_flat_patches],
+            Write(patch_pred_text),
+        )
+        for idx, final_patch in enumerate(final_flat_patches):
+            square = Square()
+            square.move_to(final_patch)\
+                .set_z_index(1)\
+                .set_fill(color=final_patch_colours[idx], opacity=0.5)\
+                .set_stroke(width=0)
+            square.height = square.width = final_patch_size
+            self.play(GrowFromPoint(square, instance_pred_obj_copies[idx].get_center()))
 
-        # # Fade all out
+        agricultural_text = Text("Agricultural", font_size=28, color=YELLOW_E).next_to(final_patches[0][2], buff=0.3)
+        urban_text = Text("Urban", font_size=28, color=BLUE).next_to(final_patches[1][2], buff=0.3)
+        forest_text = Text("Forest", font_size=28, color=GREEN).next_to(final_patches[2][2], buff=0.3)
+        self.wait(1)
+        self.play(
+            Write(agricultural_text),
+            Write(urban_text),
+            Write(forest_text),
+            run_time=2
+        )
+        self.wait(1)
+
+        # Fade all out
         # self.play(
         #     *[FadeOut(p) for p in patch_copies],
         #     *[FadeOut(f) for f in feature_copies],
