@@ -1,3 +1,2 @@
-matplotlib~=3.5.1
-manim~=0.15.1
-torch~=1.11.0+cu113
+matplotlib
+manim

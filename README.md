@@ -19,8 +19,6 @@ Video compilation (high quality):
 
 * Manim - obviously!
 * Matplotlib - for colour maps.
-* PyTorch - for tensors (I had planned to integrate this with my actual models but 
-instead I'm just randomly generating tensors).
 
 ## License
 
